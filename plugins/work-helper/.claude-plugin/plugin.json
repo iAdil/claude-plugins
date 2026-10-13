@@ -1,0 +1,9 @@
+{
+  "name": "work-helper",
+  "version": "0.2.0",
+  "description": "Shows the current project and git branch, a per-project task queue with progress, and 5-hour / weekly usage limits; add-task skill",
+  "author": {
+    "name": "Adil"
+  },
+  "types": "./types/index.d.ts"
+}

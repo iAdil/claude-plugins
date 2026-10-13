@@ -1,0 +1,14 @@
+{
+  "name": "adil-plugins",
+  "description": "Adil's personal Claude Code plugins",
+  "owner": {
+    "name": "Adil"
+  },
+  "plugins": [
+    {
+      "name": "work-helper",
+      "source": "./plugins/work-helper",
+      "description": "Current project and git branch, a per-project task queue with progress, and 5-hour / weekly usage limits; add-task skill"
+    }
+  ]
+}
