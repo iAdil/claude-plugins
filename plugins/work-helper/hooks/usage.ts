@@ -44,3 +44,16 @@ export const usageRows = (limits: Limit[], now: number): Row[] =>
         resets: Number.isNaN(resetAt) ? undefined : timeLeft(resetAt - now),
       }
     })
+
+const money = (usd: number) => `$${usd < 10 ? usd.toFixed(2) : usd.toFixed(1)}`
+
+// The hourly rate shows once the session is 10 minutes old, before that it swings too much.
+export const costLine = (usd: number, startedAt: number, now: number) => {
+  const hours = (now - startedAt) / 3600000
+
+  return {
+    total: money(usd),
+    perHour: hours >= 1 / 6 ? `${money(usd / hours)}/h` : undefined,
+    elapsed: timeLeft(now - startedAt),
+  }
+}

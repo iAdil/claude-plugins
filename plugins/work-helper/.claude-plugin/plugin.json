@@ -1,9 +1,89 @@
 {
   "name": "work-helper",
-  "version": "0.2.0",
-  "description": "Shows the current project and git branch, a per-project task queue with progress, and 5-hour / weekly usage limits; add-task skill",
+  "version": "0.3.0",
+  "description": "Project and git branch in the status line; a band with the project's task queue, usage limits, context fill, token cost and time today; budget alerts, a done ping, a Docker pane; add-task and hours skills",
   "author": {
     "name": "Adil"
   },
-  "types": "./types/index.d.ts"
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "showProject": {
+      "type": "boolean",
+      "title": "Status line: project",
+      "description": "Show the current project and git branch in the status line",
+      "default": true
+    },
+    "showTasks": {
+      "type": "boolean",
+      "title": "Task queue",
+      "description": "Per-project task queue: band rows, task tools and the add-task skill's tools",
+      "default": true
+    },
+    "showLimits": {
+      "type": "boolean",
+      "title": "Usage limits",
+      "description": "5-hour and weekly usage-left bars in the band",
+      "default": true
+    },
+    "showContext": {
+      "type": "boolean",
+      "title": "Context meter",
+      "description": "Context window fill bar in the band",
+      "default": true
+    },
+    "showCost": {
+      "type": "boolean",
+      "title": "Token cost",
+      "description": "Session token cost at API prices in the band",
+      "default": true
+    },
+    "trackTime": {
+      "type": "boolean",
+      "title": "Time tracker",
+      "description": "Track active time per project per day; /time, time_report tool and the hours skill",
+      "default": true
+    },
+    "dockerPane": {
+      "type": "boolean",
+      "title": "Docker pane",
+      "description": "/docker opens a pane with the project's containers and start / stop buttons",
+      "default": true
+    },
+    "budgetAlerts": {
+      "type": "boolean",
+      "title": "Budget alerts",
+      "description": "Toast and notify when limits, cost or context cross a threshold",
+      "default": true
+    },
+    "costStepUsd": {
+      "type": "number",
+      "title": "Cost alert step ($)",
+      "description": "Alert each time the session's token cost passes another multiple of this",
+      "default": 20
+    },
+    "limitAlertPercent": {
+      "type": "number",
+      "title": "Limit alert (%)",
+      "description": "Alert when the 5-hour or weekly window passes this much used (and at 95%)",
+      "default": 80
+    },
+    "contextAlertPercent": {
+      "type": "number",
+      "title": "Context alert (%)",
+      "description": "Alert when the context window is this full",
+      "default": 85
+    },
+    "donePing": {
+      "type": "boolean",
+      "title": "Done ping",
+      "description": "Desktop notification when a long turn finishes",
+      "default": true
+    },
+    "doneAfterSeconds": {
+      "type": "number",
+      "title": "Done ping after (s)",
+      "description": "Only notify for turns at least this long",
+      "default": 120
+    }
+  }
 }

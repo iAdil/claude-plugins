@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'claude-code/testing'
 
-import { timeLeft, usageRows } from './usage'
+import { costLine, timeLeft, usageRows } from './usage'
 
 const NOW = Date.parse('2026-10-13T10:00:00Z')
 
@@ -30,5 +30,15 @@ describe('work-helper usage rows', () => {
     expect(timeLeft((3 * 24 + 4) * 3600000)).toBe('3d 4h')
     expect(timeLeft(5 * 60000)).toBe('5m')
     expect(timeLeft(-1000)).toBe('0m')
+  })
+})
+
+describe('work-helper session cost', () => {
+  test('formats the total and hides the rate in the first 10 minutes', async () => {
+    expect(costLine(0.4219, NOW - 5 * 60000, NOW)).toEqual({ total: '$0.42', perHour: undefined, elapsed: '5m' })
+  })
+
+  test('shows an hourly rate once the session is older', async () => {
+    expect(costLine(12.34, NOW - 2 * 3600000, NOW)).toEqual({ total: '$12.3', perHour: '$6.17/h', elapsed: '2h 0m' })
   })
 })

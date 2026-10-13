@@ -17,14 +17,16 @@ test('draws both usage windows above the prompt', async ($, on) => {
   const clock = mock.clock(on)
   await clock.set(Date.parse('2026-10-13T10:00:00Z'))
   on('session.measure', (_$, e) => ({ changed: e.changed }))
+  on('session.usage', () => ({ value: { startedAt: Date.parse('2026-10-13T08:00:00Z'), context: { window: 200000 }, rateLimits: [] } }))
 
   await $.session.measure({
     context: { window: 200000 },
+    cost: { usd: 3.5 },
     rateLimits: [
       { kind: 'five_hour', percentUsed: 38, resetsAt: '2026-10-13T12:14:00Z' },
       { kind: 'seven_day', percentUsed: 91 },
     ],
-    changed: ['rateLimits'],
+    changed: ['rateLimits', 'cost'],
   })
 
   for (const surface of ['terminal', 'desktop'] as const) {
@@ -32,6 +34,8 @@ test('draws both usage windows above the prompt', async ($, on) => {
     expect(await ui.find({ type: 'Text', text: /62% left/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /9% left/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /resets in 2h 14m/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: '$3.50' })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: / · \$1\.75\/h/ })).toBeDefined()
     await ui.unmount()
   }
 })

@@ -1,13 +1,13 @@
-export type Project = { name: string; path: string; framework: string; runtime: string }
+export type Project = { name: string; path: string; framework: string; runtime: string; url: string }
 
-// Rows of the registry's markdown table: `| Name | Path | Framework | Runtime | ...`
+// Rows of the registry's markdown table: `| Name | Path | Framework | Runtime | Slot | Ports | URL | Updated |`
 export const parseRegistry = (text: string): Project[] =>
   text
     .split('\n')
     .filter(line => line.startsWith('| '))
     .map(line => line.split('|').map(cell => cell.trim()))
     .filter(([, name, path]) => name !== 'Name' && path?.startsWith('/'))
-    .map(([, name = '', path = '', framework = '', runtime = '']) => ({ name, path, framework, runtime }))
+    .map(([, name = '', path = '', framework = '', runtime = '', , , url = '']) => ({ name, path, framework, runtime, url }))
 
 // The registered project holding `cwd`; the deepest path wins when several do.
 export const findProject = (projects: Project[], cwd: string): Project | undefined =>
