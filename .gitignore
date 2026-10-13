@@ -1,3 +1,4 @@
 # Written by Claude Code when it loads a mod
 .claude-plugin/types/
 node_modules/
+.idea
