@@ -4,19 +4,19 @@ import { addTask, completeStep, describeQueue, emptyQueue, finishActive, progres
 
 const twoTasks = () =>
   addTask(
-    addTask(emptyQueue('hisense'), { id: '1', title: 'Add 2FA', steps: ['Entity', 'Form', 'Tests'] }, 'end'),
-    { id: '2', title: 'Turnstile', steps: ['Widget'] },
+    addTask(emptyQueue('instagram'), { id: '1', title: 'Add photo stories', steps: ['Entity', 'Form', 'Tests'] }, 'end'),
+    { id: '2', title: 'Like button', steps: ['Widget'] },
     'end',
   )
 
 describe('work-helper task queue', () => {
   test('the first task added is active, later ones wait', async () => {
-    expect(twoTasks().tasks.map(t => t.title)).toEqual(['Add 2FA', 'Turnstile'])
+    expect(twoTasks().tasks.map(t => t.title)).toEqual(['Add photo stories', 'Like button'])
   })
 
   test("'next' goes right after the active task", async () => {
     const q = addTask(twoTasks(), { id: '3', title: 'Hotfix', steps: ['Fix'] }, 'next')
-    expect(q.tasks.map(t => t.title)).toEqual(['Add 2FA', 'Hotfix', 'Turnstile'])
+    expect(q.tasks.map(t => t.title)).toEqual(['Add photo stories', 'Hotfix', 'Like button'])
   })
 
   test('ticking steps moves the percent and finishes the task', async () => {
@@ -25,8 +25,8 @@ describe('work-helper task queue', () => {
 
     q = completeStep(q, 1).queue
     const last = completeStep(q, 3)
-    expect(last.finished?.title).toBe('Add 2FA')
-    expect(last.queue.tasks.map(t => t.title)).toEqual(['Turnstile'])
+    expect(last.finished?.title).toBe('Add photo stories')
+    expect(last.queue.tasks.map(t => t.title)).toEqual(['Like button'])
   })
 
   test('an out-of-range step changes nothing', async () => {
@@ -35,7 +35,7 @@ describe('work-helper task queue', () => {
   })
 
   test('finishing drops the active task', async () => {
-    expect(finishActive(twoTasks()).queue.tasks.map(t => t.title)).toEqual(['Turnstile'])
+    expect(finishActive(twoTasks()).queue.tasks.map(t => t.title)).toEqual(['Like button'])
     expect(describeQueue(emptyQueue('x'))).toBe('No tasks queued for x.')
   })
 })

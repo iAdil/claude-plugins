@@ -3,6 +3,7 @@ import type { EngineInterface, PluginOptions, Register } from 'claude-code'
 
 import type { Queue } from '../types'
 import { FORMAT, composeArgv, parseContainers, shortPorts } from './docker'
+import { cleanSummary, quickSummary, summaryPrompt } from './lastturn'
 import { contextRow, dueAlerts } from './meters'
 import { findProject, parseRegistry, statusText } from './project'
 import { addTask, completeStep, describeQueue, emptyQueue, finishActive, progress } from './tasks'
@@ -17,6 +18,7 @@ const project = atom({ plugin: 'work-helper', key: 'project' } as const, null)
 const docker = atom({ plugin: 'work-helper', key: 'docker' } as const, { list: [] })
 const alerted = atom({ plugin: 'work-helper', key: 'alerted' } as const, [])
 const todayMs = atom({ plugin: 'work-helper', key: 'todayMs' } as const, 0)
+const lastTurn = atom({ plugin: 'work-helper', key: 'lastTurn' } as const, null)
 
 const DOCKER_PANE = 'work-helper-docker'
 
@@ -28,6 +30,7 @@ const settings = (options: PluginOptions) => {
   return {
     statusLine: on('showProject'),
     tasks: on('showTasks'),
+    lastTurn: on('showLastTurn'),
     limits: on('showLimits'),
     context: on('showContext'),
     cost: on('showCost'),
@@ -145,6 +148,21 @@ const checkAlerts = async ($: EngineInterface) => {
   for (const alert of alerts) {
     $.ui.toast(alert.text, { timeoutMs: 10000 })
     await $.ui.notify(alert.text, { title: 'Claude Code' }).catch(() => undefined)
+  }
+}
+
+// --- last turn ---------------------------------------------------------------
+
+const summarise = async ($: EngineInterface, answer: string) => {
+  const text =
+    quickSummary(answer) ??
+    (await $.model
+      .complete({ model: 'haiku', prompt: summaryPrompt(answer), maxTokens: 60 })
+      .then(r => (r.isAnswered ? cleanSummary(r.text) : undefined))
+      .catch(() => undefined))
+
+  if (text) {
+    await update($, lastTurn, () => text)
   }
 }
 
@@ -295,6 +313,12 @@ export const register: Register = (on, options) => {
 
   on('turn.complete', async ($, e, next) => {
     const result = await next(e)
+
+    // Not awaited: the row fills in a moment later instead of holding up the turn's end.
+    if (cfg.lastTurn && e.reason === 'answer' && e.agentId === undefined && e.answer.trim()) {
+      void summarise($, e.answer).catch(() => undefined)
+    }
+
     // The branch can change during a turn (git checkout in Bash).
     await refresh($, await $.session.cwd())
     await touch($)
@@ -428,8 +452,9 @@ export const register: Register = (on, options) => {
     const today = cfg.time ? await read($, todayMs) : 0
     const name = (await read($, project))?.name
     const [active, upNext, ...later] = cfg.tasks ? (await read($, queue)).tasks : []
+    const last = cfg.lastTurn ? await read($, lastTurn) : null
 
-    if (e.props.hasSurvey || (rows.length === 0 && !active && !ctx && !money && today === 0)) {
+    if (e.props.hasSurvey || (rows.length === 0 && !active && !last && !ctx && !money && today === 0)) {
       return next(e)
     }
 
@@ -456,6 +481,12 @@ export const register: Register = (on, options) => {
             <Text dimColor>{'⏭ Next: '}</Text>
             <Text>{upNext ? upNext.title : '—'}</Text>
             {later.length > 0 && <Text dimColor>{` (+${later.length} more)`}</Text>}
+          </Box>
+        )}
+        {last && (
+          <Box key="last">
+            <Text color="success">{'✓ Last: '}</Text>
+            <Text wrap="truncate">{last}</Text>
           </Box>
         )}
         {rows.map(row => (

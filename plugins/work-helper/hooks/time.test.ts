@@ -4,12 +4,12 @@ import { addActive, addFinished, dayReport, duration } from './time'
 
 describe('work-helper time', () => {
   test('adds time and finished tasks per project', async () => {
-    let day = addActive({}, 'hisense', 90 * 60000)
-    day = addActive(day, 'hisense', 30 * 60000)
-    day = addActive(day, 'adro', 10 * 60000)
-    day = addFinished(day, 'hisense', 'Add 2FA')
+    let day = addActive({}, 'instagram', 90 * 60000)
+    day = addActive(day, 'instagram', 30 * 60000)
+    day = addActive(day, 'threads', 10 * 60000)
+    day = addFinished(day, 'instagram', 'Add photo stories')
     expect(dayReport('2026-10-13', day)).toBe(
-      ['Tracked time on 2026-10-13: 2h 10m', '- hisense: 2h 0m (finished: Add 2FA)', '- adro: 10m'].join('\n'),
+      ['Tracked time on 2026-10-13: 2h 10m', '- instagram: 2h 0m (finished: Add photo stories)', '- threads: 10m'].join('\n'),
     )
   })
 

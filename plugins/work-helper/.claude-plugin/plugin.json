@@ -1,7 +1,7 @@
 {
   "name": "work-helper",
-  "version": "0.3.0",
-  "description": "Project and git branch in the status line; a band with the project's task queue, usage limits, context fill, token cost and time today; budget alerts, a done ping, a Docker pane; add-task and hours skills",
+  "version": "0.4.0",
+  "description": "Project and git branch in the status line; a band with the project's task queue, a summary of the last turn, usage limits, context fill, token cost and time today; budget alerts, a done ping, a Docker pane; add-task and hours skills",
   "license": "MIT",
   "author": {
     "name": "Adil"
@@ -18,6 +18,12 @@
       "type": "boolean",
       "title": "Task queue",
       "description": "Per-project task queue: band rows, task tools and the add-task skill's tools",
+      "default": true
+    },
+    "showLastTurn": {
+      "type": "boolean",
+      "title": "Last turn summary",
+      "description": "A band row saying in a few words what the last turn did (one small Haiku call per turn)",
       "default": true
     },
     "showLimits": {

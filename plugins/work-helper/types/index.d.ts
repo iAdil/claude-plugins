@@ -29,6 +29,7 @@ declare module 'claude-code' {
       docker: Docker
       alerted: string[]
       todayMs: number
+      lastTurn: string | null
     }
   }
 }
