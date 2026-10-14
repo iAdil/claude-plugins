@@ -2,6 +2,7 @@
   "name": "work-helper",
   "version": "0.3.0",
   "description": "Project and git branch in the status line; a band with the project's task queue, usage limits, context fill, token cost and time today; budget alerts, a done ping, a Docker pane; add-task and hours skills",
+  "license": "MIT",
   "author": {
     "name": "Adil"
   },

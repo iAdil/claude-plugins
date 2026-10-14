@@ -63,3 +63,7 @@ Turn on auto-update for the `adil-plugins` marketplace in `/plugin` → Marketpl
 
 - Done ping and budget alerts use your system notifications; if none are set up for your terminal, you will only see the in-terminal toast.
 - The Docker pane needs `docker` on your PATH and finds containers started by `docker compose` (or Sail) from the project's folder.
+
+## License
+
+[MIT](LICENSE)
